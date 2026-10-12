@@ -28,9 +28,27 @@ using namespace std;
  */
 bool input_positions(string filename, vector<Position>& positions)
 {
-  //
-  // TODO:
-  //
+  ifstream file;
+  file.open(filename);
+  if (file.fail()) {
+    cout << "file not found" << endl;
+  }
+
+  while (true) {
+    double lat, lon;
+    string ident, category;
+
+    file >> lat;
+    file >> lon;
+    file >> ident;
+    file >> category;
+
+    if (file.fail()) {
+      break;
+    }
+
+    positions.push_back(Position(lat, lon, ident, category));
+  }
   return true;
 }
 
@@ -43,9 +61,10 @@ bool input_positions(string filename, vector<Position>& positions)
  */
 void sort_positions(vector<Position>& positions)
 {
-  //
-  // TODO:
-  //
+  sort(positions.begin(), positions.end(),
+      [](const Position& pos1, const Position& pos2) -> bool {
+        return pos1.getIdentifier() < pos2.getIdentifier();
+      });
 }
 
 
@@ -57,9 +76,9 @@ void sort_positions(vector<Position>& positions)
  */
 void output_positions(const vector<Position>& positions)
 {
-  //
-  // TODO:
-  //
+  for (const Position& pos : positions) {
+    pos.print();
+  }
 }
 
 
@@ -77,7 +96,9 @@ vector<Position>::const_iterator search(const vector<Position>& positions, strin
   //
   // TODO:
   //
-  iter = positions.end();
+  iter = find_if(positions.begin(), positions.end(), [=](const Position& pos) -> bool {
+    return toLower(pos.getIdentifier()) == toLower(identifier);
+  });
   return iter;
 }
 
@@ -91,9 +112,13 @@ vector<Position>::const_iterator search(const vector<Position>& positions, strin
  */
 void find_position(const vector<Position>& positions, string identifier)
 {
-  //
-  // TODO:
-  //
+  vector<Position>::const_iterator res = search(positions, identifier);
+  if (res == positions.end()) {
+    cout << "not found" << endl;
+    return;
+  }
+
+  res->print();
 }
 
 
@@ -106,9 +131,14 @@ void find_position(const vector<Position>& positions, string identifier)
  */
 void remove_position(vector<Position>& positions, string identifier)
 {
-  //
-  // TODO:
-  //
+  vector<Position>::const_iterator res = search(positions, identifier);
+  if (res == positions.end()) {
+    cout << "not found" << endl;
+    return;
+  }
+
+  positions.erase(res);
+  cout << "removed" << endl;
 }
 
 
