@@ -12,6 +12,7 @@
 #include <vector>
 #include <algorithm>
 #include <utility>
+#include <cmath>
 
 #include "position.h"
 #include "util.h"
@@ -151,9 +152,30 @@ void remove_position(vector<Position>& positions, string identifier)
  */
 void closest_food(const vector<Position>& positions, string identifier)
 {
-  //
-  // TODO:
-  //
+  vector<pair<string, double>> food_distances;
+  vector<Position>::const_iterator res = search(positions, identifier);
+  if (res == positions.end()) {
+    cout << "not found" << endl;
+    return;
+  }
+
+  for (const Position& pos : positions) {
+    if (pos.getCategory() == "food") {
+      pair<string, double> p = make_pair(
+        pos.getIdentifier(),
+        res->distance(pos)
+      );
+      food_distances.push_back(p);
+    }
+  }
+
+  sort(food_distances.begin(), food_distances.end(), [](const pair<string, double>& x, const pair<string, double>& y) {
+    return x.second < y.second;
+  });
+
+  for (const auto& dist : food_distances) {
+    cout << dist.first << ": " << dist.second << endl;
+  }
 }
 
 
