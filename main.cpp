@@ -160,7 +160,8 @@ void closest_food(const vector<Position>& positions, string identifier)
   }
 
   for (const Position& pos : positions) {
-    if (pos.getCategory() == "food") {
+    // we don't want to output a distance to the identifier
+    if (pos.getCategory() == "food" && pos.getIdentifier() != identifier) {
       pair<string, double> p = make_pair(
         pos.getIdentifier(),
         res->distance(pos)
